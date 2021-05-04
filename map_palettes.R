@@ -18,6 +18,9 @@ breaks <- classIntervals(c(range, sample(all_values, 1000)), n=20, style="fisher
 pal <- hcl.colors(255, rev=T)
 breaks_pal <- hcl.colors(20, rev=T)
 
+# condensed viridis color palette; move end point inside the range
+semi_pal <- c(hcl.colors(100, rev=T), rep(pal[length(pal)], 155))
+
 # means map
 # create means rasters
 r_means <- stack(c(mean(all_raster[[1:54]], na.rm=TRUE),
@@ -36,13 +39,18 @@ plot(r_means, col=pal, zlim=means_range) # continuous
 plot(r_means, col=breaks_pal, breaks=means_breaks) # jenks
 
 # months (2014)
-# continuous
+# order: continuous, truncated-range continuous, jenks
+# base model
 plot(all_raster[[1:10]], col=pal, zlim=range)
-plot(all_raster[[1:10 + 54]], col=pal, zlim=range)
-plot(all_raster[[1:10 + 54 + 54]], col=pal, zlim=range)
-# jenks
+plot(all_raster[[1:10]], col=semi_pal, zlim=range)
 plot(all_raster[[1:10]], col=breaks_pal, breaks=breaks)
+# outlier-containing model
+plot(all_raster[[1:10 + 54]], col=pal, zlim=range)
+plot(all_raster[[1:10 + 54]], col=semi_pal, zlim=range)
 plot(all_raster[[1:10 + 54]], col=breaks_pal, breaks=breaks)
+# spatial-cv model
+plot(all_raster[[1:10 + 54 + 54]], col=pal, zlim=range)
+plot(all_raster[[1:10 + 54 + 54]], col=semi_pal, zlim=range)
 plot(all_raster[[1:10 + 54 + 54]], col=breaks_pal, breaks=breaks)
 # jenks, with artificially enhanced boundary at 10
 plot(all_raster[[1:10 + 54 + 54]], col=hcl.colors(25, rev=T), breaks=sort(c(seq(9.998, 10.002, by=0.001), breaks)))
