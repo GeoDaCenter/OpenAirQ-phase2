@@ -1,8 +1,11 @@
 library(raster)
 library(classInt)
 library(tidyr)
+library(tmap)
 
-# setwd("Desktop/OpenAirQ-models")
+tmap_mode("view")
+
+setwd("C:\\Users\\Andrew\\Documents\\Work\\OpenAirQ-models")
 # combine 3 model rasters
 all_raster <- stack(c(stack("21counties/nn_21_base.grd"),
                       stack("21counties/nn_21_outlier.grd"),
@@ -15,11 +18,11 @@ range <- c(min(all_values),
 breaks <- classIntervals(c(range, sample(all_values, 1000)), n=20, style="fisher")$brks
 
 # viridis color palettes
-pal <- hcl.colors(255, rev=T)
-breaks_pal <- hcl.colors(20, rev=T)
+pal <- hcl.colors(255, pal="turku")
+breaks_pal <- hcl.colors(20, pal="turku")
 
 # condensed viridis color palette; move end point inside the range
-semi_pal <- c(hcl.colors(100, rev=T), rep(pal[length(pal)], 155))
+semi_pal <- c(hcl.colors(100, pal="turku"), rep(pal[length(pal)], 155))
 
 # means map
 # create means rasters
@@ -53,4 +56,10 @@ plot(all_raster[[1:10 + 54 + 54]], col=pal, zlim=range)
 plot(all_raster[[1:10 + 54 + 54]], col=semi_pal, zlim=range)
 plot(all_raster[[1:10 + 54 + 54]], col=breaks_pal, breaks=breaks)
 # jenks, with artificially enhanced boundary at 10
-plot(all_raster[[1:10 + 54 + 54]], col=hcl.colors(25, rev=T), breaks=sort(c(seq(9.998, 10.002, by=0.001), breaks)))
+# plot(all_raster[[1:10 + 54 + 54]], col=hcl.colors(25, rev=T), breaks=sort(c(seq(9.998, 10.002, by=0.001), breaks)))
+
+# tmap
+tm_shape(r_means) + tm_raster(alpha=0.6, palette=semi_pal, style="cont", title="") # means
+tm_shape(all_raster[[1:10]]) + tm_raster(alpha=0.6, palette=semi_pal, style="cont", title="") + tm_facets(nrow=3) # base
+tm_shape(all_raster[[1:10 + 54]]) + tm_raster(alpha=0.6, palette=semi_pal, style="cont", title="") + tm_facets(nrow=3) # outlier
+tm_shape(all_raster[[1:10 + 54 + 54]]) + tm_raster(alpha=0.6, palette=semi_pal, style="cont", title="") + tm_facets(nrow=3) # spatial cv
