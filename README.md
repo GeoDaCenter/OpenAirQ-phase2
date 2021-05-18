@@ -8,7 +8,7 @@ Current projection is UTM zone 16.
 | NDVI | Normalized Difference Vegetation Index |
 | PS | A kernel density estimate of the number of PM2.5 emissions sources. |
 | Road Density | Separated into Primary/Secondary/Motorway roads; motorways are the most important roads, followed by primary and then secondary |
-| Land Cover Development | Separated into low/medium/high intenity development |
+| Land Cover Development | Separated into low/medium/high intensity development |
 | Population Density | Tract-level population density |
 | TEMP | Temperature in Fahrenheit |
 | RELH | Relative Humidity |
