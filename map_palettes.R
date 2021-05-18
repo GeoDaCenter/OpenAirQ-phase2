@@ -30,6 +30,14 @@ semi_pal <- c(hcl.colors(100, pal="turku"), rep(pal[length(pal)], 155))
 r_means <- stack(c(mean(all_raster[[1:54]], na.rm=TRUE),
                   mean(all_raster[[1:54 + 54]], na.rm=TRUE),
                   mean(all_raster[[1:54 + 54 + 54]], na.rm=TRUE)))
+
+base_year_means <- stack(c(mean(all_raster[[1:10]], na.rm=TRUE),
+                           mean(all_raster[[11:21]], na.rm=TRUE),
+                           mean(all_raster[[22:31]], na.rm=TRUE),
+                           mean(all_raster[[32:42]], na.rm=TRUE),
+                           mean(all_raster[[43:54]], na.rm=TRUE)))
+names(base_year_means) <- c(2014, 2015, 2016, 2017, 2018)
+
 # pull all cell values
 means_values <- as.vector(sapply(1:dim(r_means)[3], FUN=function(z) values(r_means[[z]])[!is.na(values(r_means[[z]]))]))
 means_range <- c(min(means_values),
@@ -37,7 +45,7 @@ means_range <- c(min(means_values),
 # downsampled jenks breaks
 means_breaks <- classIntervals(c(means_range, sample(means_values, 1000)), n=20, style="fisher")$brks
 
-basemap = osm.raster(r_means)
+basemap <- tm_shape(osm.raster(r_means)) + tm_rgb()
 
 # means
 names(r_means) <- c("base", "with outliers", "with spatial cv")
@@ -62,7 +70,8 @@ names(r_means) <- c("base", "with outliers", "with spatial cv")
 # plot(all_raster[[1:10 + 54 + 54]], col=hcl.colors(25, rev=T), breaks=sort(c(seq(9.998, 10.002, by=0.001), breaks)))
 
 # tmap
-tm_shape(basemap) + tm_rgb() + tm_shape(r_means) + tm_raster(alpha=0.7, palette=semi_pal, style="cont", title="") # means
+basemap + tm_shape(r_means) + tm_raster(alpha=0.7, palette=semi_pal, style="cont", title="") # means
+basemap + tm_shape(base_year_means) + tm_raster(alpha=0.7, palette=semi_pal, style="cont", title="") # annual means (base model)
 tm_shape(all_raster[[1:10]]) + tm_raster(alpha=0.7, palette=semi_pal, style="cont", title="") + tm_facets(nrow=3) # base
 tm_shape(all_raster[[1:10 + 54]]) + tm_raster(alpha=0.7, palette=semi_pal, style="cont", title="") + tm_facets(nrow=3) # outlier
 tm_shape(all_raster[[1:10 + 54 + 54]]) + tm_raster(alpha=0.7, palette=semi_pal, style="cont", title="") + tm_facets(nrow=3) # spatial cv
