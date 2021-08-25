@@ -6,7 +6,7 @@ library(rosm)
 
 # tmap_mode("view")
 
-setwd("C:\\Users\\Andrew\\Documents\\Work\\OpenAirQ-models")
+setwd("Desktop/models")
 # combine 3 model rasters
 all_raster <- stack(c(stack("21counties/nn_21_base.grd"),
                       stack("21counties/nn_21_outlier.grd"),
@@ -70,8 +70,17 @@ names(r_means) <- c("base", "with outliers", "with spatial cv")
 # plot(all_raster[[1:10 + 54 + 54]], col=hcl.colors(25, rev=T), breaks=sort(c(seq(9.998, 10.002, by=0.001), breaks)))
 
 # tmap
-basemap + tm_shape(r_means) + tm_raster(alpha=0.7, palette=semi_pal, style="cont", title="") # means
-basemap + tm_shape(base_year_means) + tm_raster(alpha=0.7, palette=semi_pal, style="cont", title="") # annual means (base model)
-tm_shape(all_raster[[1:10]]) + tm_raster(alpha=0.7, palette=semi_pal, style="cont", title="") + tm_facets(nrow=3) # base
-tm_shape(all_raster[[1:10 + 54]]) + tm_raster(alpha=0.7, palette=semi_pal, style="cont", title="") + tm_facets(nrow=3) # outlier
-tm_shape(all_raster[[1:10 + 54 + 54]]) + tm_raster(alpha=0.7, palette=semi_pal, style="cont", title="") + tm_facets(nrow=3) # spatial cv
+basemap + tm_shape(r_means) + tm_raster(alpha=0.7, palette=pal, style="cont", title="") # means
+basemap + tm_shape(base_year_means) + tm_raster(alpha=0.7, palette=pal, style="cont", title="") # annual means (base model)
+tm_shape(all_raster[[1:10]]) + tm_raster(alpha=0.7, palette=pal, style="cont", title="") + tm_facets(nrow=3) # base
+tm_shape(all_raster[[1:10 + 54]]) + tm_raster(alpha=0.7, palette=pal, style="cont", title="") + tm_facets(nrow=3) # outlier
+tm_shape(all_raster[[1:10 + 54 + 54]]) + tm_raster(alpha=0.7, palette=pal, style="cont", title="") + tm_facets(nrow=3) # spatial cv
+
+true_values <- stack("21counties/point_data/true.grd")
+matched_pred <- stack("21counties/point_data/pred_base.grd")
+
+mse_raster <- mean((matched_pred - true_values)**2, na.rm=TRUE)
+
+mse <- rasterToPoints(mse_raster, spatial=TRUE)
+
+basemap + tm_shape(mse) + tm_dots(col="layer", palette=pal, style="cont") # mse by point; palette and color scale need change
