@@ -82,5 +82,12 @@ matched_pred <- stack("21counties/point_data/pred_base.grd")
 mse_raster <- mean((matched_pred - true_values)**2, na.rm=TRUE)
 
 mse <- rasterToPoints(mse_raster, spatial=TRUE)
+names(mse) <- "mse"
 
-basemap + tm_shape(mse) + tm_dots(col="layer", palette=pal, style="cont") # mse by point; palette and color scale need change
+basemap + tm_shape(mse) + tm_symbols(col="mse", scale=0.8, palette=hcl.colors(255, pal="purples", rev=TRUE),
+                                     border.col="black", style="cont") # mse by point
+
+# checked and other mse plots are similar
+
+basemap + tm_shape(rasterToPoints(true_values[[16]], spatial=TRUE)) + tm_symbols(col="M7.15", scale=0.8, palette=pal,
+                                     border.col="black", style="cont") # July 2015
