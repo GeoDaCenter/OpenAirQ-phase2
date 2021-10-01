@@ -1,4 +1,7 @@
-# OpenAirQ-models
+# OpenAirQ-Phase 2
+
+This repo has data wrangling and modeling scripts for phase 2.
+
 Current projection is UTM zone 16.
 
 | Variable | Description |
