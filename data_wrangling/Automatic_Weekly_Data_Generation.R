@@ -34,10 +34,11 @@ county.pm25<- full.data%>%
             latitude = mean(SITE_LATITUDE), 
             longitude = mean(SITE_LONGITUDE),
             name = first(`Site Name`))%>%
-  filter(Date >= '2020-12-01')%>%
   ungroup(Date)%>%
   arrange(desc(Date))%>%
   pivot_wider(names_from = 'Date', values_from = 'pm2.5')
+
+county.pm25 <- county.pm25[, 1:which(colnames(county.pm25) == '2020-12-01')]
 
 # this opaque code converts the daily data to weekly
 # note colnames of new dataframe define the week ending at the given date
