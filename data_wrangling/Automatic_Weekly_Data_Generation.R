@@ -65,10 +65,11 @@ county.aqi<- full.data%>%
             latitude = mean(SITE_LATITUDE), 
             longitude = mean(SITE_LONGITUDE),
             name = first(`Site Name`))%>%
-  filter(Date >= '2020-12-01')%>%
   ungroup(Date)%>%
   arrange(desc(Date))%>%
   pivot_wider(names_from = 'Date', values_from = 'aqi')
+
+county.aqi <- county.aqi[, 1:which(colnames(county.aqi) == '2020-12-01')]
 
 # this opaque code converts the daily data to weekly
 # note colnames of new dataframe define the week ending at the given date
